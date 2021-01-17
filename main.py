@@ -18,12 +18,11 @@ def hello_world():
 def download_result():
     print('in')
     LOTTO_URL = 'https://www.pais.co.il/Lotto/lotto_resultsDownload.aspx'
-    while True:
-        try:
-            res = requests.get(LOTTO_URL, timeout=15)
-            break
-        except ConnectTimeout:
-            print('timeout connection')
+    proxy = {
+        "http": 'http://user-dekelev-sessionduration-30:dekel123@il.smartproxy.com:30001',
+        "https": 'https://user-dekelev-sessionduration-30:dekel123@il.smartproxy.com:30001',
+    }
+    res = requests.get(LOTTO_URL, proxies=proxy)
     data = res.text.split('\r\n')
     print(data)
     dynamodb = boto3.resource('dynamodb')
