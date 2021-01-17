@@ -30,7 +30,7 @@ def download_result():
     for row in data:
         table.put_item(
             Item={
-                'id': str(row[0]),
+                'id': int(row[0]),
                 'date': row[1],
                 'numbers': [row[2], row[3], row[4], row[5], row[6], row[7]],
                 'strong_number': row[8],
