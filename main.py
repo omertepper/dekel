@@ -66,7 +66,6 @@ def download_chance_result():
 
 @app.route('/download_777_result', methods=['GET'])
 def download_777_result():
-    print('in')
     LOTTO_URL = 'https://www.pais.co.il/777/777_resultsDownload.aspx'
     proxy = {
         "http": 'http://user-dekelev-sessionduration-30:dekel123@il.smartproxy.com:30001',
@@ -74,7 +73,6 @@ def download_777_result():
     }
     res = requests.get(LOTTO_URL, proxies=proxy)
     data = res.text.split('\r\n')
-    print(data)
     dynamodb = boto3.resource('dynamodb')
     table = dynamodb.Table('777_Results')
     data.pop(0)
@@ -89,6 +87,30 @@ def download_777_result():
                             row_data[14], row_data[15], row_data[16], row_data[17], row_data[18]
                             ],
                 'form_kind': '777',
+            }
+        )
+    return 200
+
+@app.route('/download_123_result', methods=['GET'])
+def download_123_result():
+    LOTTO_URL = 'https://www.pais.co.il/123/123_resultsDownload.aspx'
+    proxy = {
+        "http": 'http://user-dekelev-sessionduration-30:dekel123@il.smartproxy.com:30001',
+        "https": 'https://user-dekelev-sessionduration-30:dekel123@il.smartproxy.com:30001',
+    }
+    res = requests.get(LOTTO_URL, proxies=proxy)
+    data = res.text.split('\r\n')
+    dynamodb = boto3.resource('dynamodb')
+    table = dynamodb.Table('123_Results')
+    data.pop(0)
+    for row in data:
+        row_data = row.split(',')
+        table.put_item(
+            Item={
+                'id': int(row_data[1]),
+                'date': row_data[0],
+                'numbers': [row_data[2], row_data[3], row_data[4]],
+                'form_kind': '123',
             }
         )
     return 200
