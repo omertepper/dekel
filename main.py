@@ -29,12 +29,13 @@ def download_result():
     table = dynamodb.Table('results')
     data.pop(0)
     for row in data:
+        row_data = row.split(',')
         table.put_item(
             Item={
-                'id': int(row[0]),
-                'date': row[1],
-                'numbers': [row[2], row[3], row[4], row[5], row[6], row[7]],
-                'strong_number': row[8],
+                'id': int(row_data[0]),
+                'date': row_data[1],
+                'numbers': [row_data[2], row_data[3], row_data[4], row_data[5], row_data[6], row_data[7]],
+                'strong_number': row_data[8],
                 'form_kind': 'lotto',
             }
         )
