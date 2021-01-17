@@ -13,6 +13,7 @@ def hello_world():
 
 @app.route('/download_result', methods=['GET'])
 def download_result():
+    print('in')
     LOTTO_URL = 'https://www.pais.co.il/Lotto/lotto_resultsDownload.aspx'
     http = urllib3.PoolManager()
     r = http.request('GET', LOTTO_URL)
