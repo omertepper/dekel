@@ -27,6 +27,7 @@ def download_result():
     print(data)
     dynamodb = boto3.resource('dynamodb')
     table = dynamodb.Table('results')
+    data.pop(0)
     for row in data:
         table.put_item(
             Item={
