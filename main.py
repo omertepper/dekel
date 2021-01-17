@@ -15,7 +15,6 @@ def hello_world():
 
 @app.route('/download_lottery_result', methods=['GET'])
 def download_lottery_result():
-    print('in')
     LOTTO_URL = 'https://www.pais.co.il/Lotto/lotto_resultsDownload.aspx'
     proxy = {
         "http": 'http://user-dekelev-sessionduration-30:dekel123@il.smartproxy.com:30001',
@@ -23,7 +22,6 @@ def download_lottery_result():
     }
     res = requests.get(LOTTO_URL, proxies=proxy)
     data = res.text.split('\r\n')
-    print(data)
     dynamodb = boto3.resource('dynamodb')
     table = dynamodb.Table('results')
     data.pop(0)
@@ -43,7 +41,6 @@ def download_lottery_result():
 
 @app.route('/download_chance_result', methods=['GET'])
 def download_chance_result():
-    print('in')
     LOTTO_URL = 'https://www.pais.co.il/chance/chance_resultsDownload.aspx'
     proxy = {
         "http": 'http://user-dekelev-sessionduration-30:dekel123@il.smartproxy.com:30001',
@@ -51,7 +48,6 @@ def download_chance_result():
     }
     res = requests.get(LOTTO_URL, proxies=proxy)
     data = res.text.split('\r\n')
-    print(data)
     dynamodb = boto3.resource('dynamodb')
     table = dynamodb.Table('Chance_Results')
     data.pop(0)
@@ -63,6 +59,36 @@ def download_chance_result():
                 'date': row_data[0],
                 'numbers': [row_data[2], row_data[3], row_data[4], row_data[5]],
                 'form_kind': 'chance',
+            }
+        )
+    return 200
+
+
+@app.route('/download_777_result', methods=['GET'])
+def download_777_result():
+    print('in')
+    LOTTO_URL = 'https://www.pais.co.il/777/777_resultsDownload.aspx'
+    proxy = {
+        "http": 'http://user-dekelev-sessionduration-30:dekel123@il.smartproxy.com:30001',
+        "https": 'https://user-dekelev-sessionduration-30:dekel123@il.smartproxy.com:30001',
+    }
+    res = requests.get(LOTTO_URL, proxies=proxy)
+    data = res.text.split('\r\n')
+    print(data)
+    dynamodb = boto3.resource('dynamodb')
+    table = dynamodb.Table('777_Results')
+    data.pop(0)
+    for row in data:
+        row_data = row.split(',')
+        table.put_item(
+            Item={
+                'id': int(row_data[1]),
+                'date': row_data[0],
+                'numbers': [row_data[2], row_data[3], row_data[4], row_data[5], row_data[6], row_data[7],
+                            row_data[8], row_data[9], row_data[10], row_data[11], row_data[12], row_data[13],
+                            row_data[14], row_data[15], row_data[16], row_data[17], row_data[18]
+                            ],
+                'form_kind': '777',
             }
         )
     return 200
