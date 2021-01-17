@@ -1,5 +1,7 @@
+import boto3
 import urllib3
 from flask import Flask, request
+import requests
 
 app = Flask(__name__)
 
@@ -15,9 +17,21 @@ def hello_world():
 def download_result():
     print('in')
     LOTTO_URL = 'https://www.pais.co.il/Lotto/lotto_resultsDownload.aspx'
-    http = urllib3.PoolManager()
-    r = http.request('GET', LOTTO_URL)
-    print(r.status)
+    res = requests.get(LOTTO_URL)
+    data = res.text.split('\r\n')
+    print(data)
+    dynamodb = boto3.resource('dynamodb')
+    table = dynamodb.Table('results')
+    for row in data:
+        table.put_item(
+            Item={
+                'id': row[0],
+                'date': row[1],
+                'numbers': [row[2], row[3], row[4], row[5], row[6], row[7]],
+                'strong_number': row[8],
+                'form_kind': 'lotto',
+            }
+        )
     return 200
 
 
