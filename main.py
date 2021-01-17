@@ -59,8 +59,8 @@ def download_chance_result():
         row_data = row.split(',')
         table.put_item(
             Item={
-                'id': int(row_data[0]),
-                'date': row_data[1],
+                'id': int(row_data[1]),
+                'date': row_data[0],
                 'numbers': [row_data[2], row_data[3], row_data[4], row_data[5]],
                 'form_kind': 'chance',
             }
