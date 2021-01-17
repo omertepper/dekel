@@ -2,6 +2,7 @@ import boto3
 import urllib3
 from flask import Flask, request
 import requests
+from requests import ConnectTimeout
 
 app = Flask(__name__)
 
@@ -17,7 +18,12 @@ def hello_world():
 def download_result():
     print('in')
     LOTTO_URL = 'https://www.pais.co.il/Lotto/lotto_resultsDownload.aspx'
-    res = requests.get(LOTTO_URL)
+    while True:
+        try:
+            res = requests.get(LOTTO_URL, timeout=15)
+            break
+        except ConnectTimeout:
+            print('timeout connection')
     data = res.text.split('\r\n')
     print(data)
     dynamodb = boto3.resource('dynamodb')
